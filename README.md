@@ -1,24 +1,12 @@
-# r3f — AI Game Maker (MVP scaffold)
+Updated README: added generate_and_assemble API info
 
-This repository contains a minimal scaffold for the "talk-to-create" game-maker app MVP: a simple web frontend and a FastAPI backend that accept a prompt and return a generated project stub. This scaffold is intended to help iterate on prompt parsing, project assembly, and build orchestration before adding real LLM/asset/build integrations.
+This project now includes a simple assembler and a /generate_and_assemble endpoint that will
+invoke the LLM (stub or real provider) to create a manifest and then write project files into
+backend/generated/<project_name>/ and produce a zip artifact.
 
-What's included
-- backend/: FastAPI backend with a stubbed /generate endpoint
-- frontend/: static single-page UI (index.html) that sends prompts to the backend
-- docs/: architecture notes and next steps
+Usage (after starting backend):
 
-Quickstart (development)
-1. Start the backend
-   - python3 -m venv .venv && source .venv/bin/activate
-   - pip install -r backend/requirements.txt
-   - uvicorn backend.app.main:app --reload --port 8000
+curl -X POST http://localhost:8000/generate_and_assemble -H "Content-Type: application/json" -d '{"prompt":"Create a small 2D platformer with double jump"}'
 
-2. Open the frontend
-   - Open frontend/index.html in your browser (or serve it with a static server)
-
-3. Try a prompt in the UI and inspect backend logs
-
-Next steps
-- Hook a real LLM to backend.generate() and implement project template assembly
-- Add engine templates (Unity/Godot) and a build worker
-- Implement asset generation and caching
+The response will include the path to the zip file on the backend host. For local testing you can
+then open backend/generated/<project_name>.zip to inspect the assembled project.

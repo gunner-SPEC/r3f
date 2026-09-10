@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import Any, Dict
 
 from . import llm
+from . import assembler
 
 app = FastAPI(title="r3f - AI Game Maker (backend)")
 
@@ -28,3 +29,14 @@ async def generate(req: PromptRequest):
     prompt = req.prompt
     manifest = await llm.generate_manifest(prompt)
     return {"ok": True, "manifest": manifest}
+
+@app.post('/generate_and_assemble')
+async def generate_and_assemble(req: PromptRequest):
+    """Generate a manifest from the prompt and assemble it into a zip artifact.
+
+    Returns: {ok: True, artifact: {project_name, output_dir, zip_path}}
+    """
+    prompt = req.prompt
+    manifest = await llm.generate_manifest(prompt)
+    result = assembler.assemble_manifest(manifest)
+    return {"ok": True, "artifact": result}
