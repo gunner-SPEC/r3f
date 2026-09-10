@@ -1,0 +1,12 @@
+# Byte- and OS ignores
+
+__pycache__/
+.venv/
+*.pyc
+*.pyo
+.env
+.DS_Store
+node_modules/
+build/
+dist/
+*.egg-info
