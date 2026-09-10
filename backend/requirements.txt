@@ -1,3 +1,5 @@
+# Development requirements for backend
 fastapi
 uvicorn
 pydantic
+openai

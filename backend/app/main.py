@@ -1,7 +1,10 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Dict
+
+from . import llm
 
 app = FastAPI(title="r3f - AI Game Maker (backend)")
 
@@ -22,16 +25,6 @@ async def health() -> Dict[str, Any]:
 
 @app.post('/generate')
 async def generate(req: PromptRequest):
-    # TODO: replace this stub with LLM orchestration and project assembly
     prompt = req.prompt
-    # Simple stubbed response: echo plus a minimal project manifest
-    manifest = {
-        "project_name": "generated-game",
-        "template": "2D-platformer",
-        "prompt_received": prompt,
-        "files": [
-            {"path": "game/main.scene", "type": "scene", "note": "placeholder scene"},
-            {"path": "game/player.cs", "type": "script", "note": "placeholder script"}
-        ]
-    }
+    manifest = await llm.generate_manifest(prompt)
     return {"ok": True, "manifest": manifest}
