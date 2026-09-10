@@ -1,12 +1,15 @@
-Updated README: added generate_and_assemble API info
+Updated README: artifact endpoints
 
-This project now includes a simple assembler and a /generate_and_assemble endpoint that will
-invoke the LLM (stub or real provider) to create a manifest and then write project files into
-backend/generated/<project_name>/ and produce a zip artifact.
+New endpoints
+- GET /artifacts
+  Returns a JSON list of available zip artifacts produced by /generate_and_assemble. Each entry contains name, path, size (bytes) and modified (unix timestamp).
 
-Usage (after starting backend):
+- GET /artifacts/{zip_name}
+  Downloads the named zip artifact as an attachment. Example:
 
-curl -X POST http://localhost:8000/generate_and_assemble -H "Content-Type: application/json" -d '{"prompt":"Create a small 2D platformer with double jump"}'
+  curl -O http://localhost:8000/artifacts/generated-game-stub.zip
 
-The response will include the path to the zip file on the backend host. For local testing you can
-then open backend/generated/<project_name>.zip to inspect the assembled project.
+Usage notes
+- Artifacts are stored under backend/generated/ by default. In production you should serve artifacts from object storage (S3) and return signed URLs instead of serving files directly from the app.
+- To enable automatic pruning of old artifacts set ARTIFACT_RETENTION_DAYS in the environment (integer days). If set to 0 or omitted, no pruning is performed.
+
